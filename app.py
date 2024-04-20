@@ -2,12 +2,17 @@ import os
 
 import requests
 import streamlit as st
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 
 from responses import SubmitQuestionAndDocumentsResponse
 
 st.set_page_config(layout="wide")
-load_dotenv()
 
 if os.getenv("ENV") == "production":
     BASE_URL = "https://deven-cleric-backend.onrender.com"
