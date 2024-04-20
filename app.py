@@ -56,7 +56,7 @@ def main():
 
     if st.button("Submit"):
         url = "https://deven-cleric-backend.onrender.com/submit_question_and_documents/"
-        url_local = "http://
+        url_local = "http://"
         resp = requests.post(url, json=data.model_dump())
         st.write(resp.status_code)
         st.write(resp.json())
