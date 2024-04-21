@@ -1,7 +1,14 @@
 import os
 
+import nltk
 import requests
 import streamlit as st
+from nltk.tokenize import sent_tokenize
+
+from responses import SubmitQuestionAndDocumentsResponse
+
+if not nltk.data.find("tokenizers/punkt"):
+    nltk.download("punkt")
 
 try:
     from dotenv import load_dotenv
@@ -10,7 +17,6 @@ except ImportError:
     pass
 
 
-from responses import SubmitQuestionAndDocumentsResponse
 
 st.set_page_config(layout="wide")
 
@@ -22,35 +28,37 @@ else:
 
 def make_sidebar():
     with st.sidebar:
-        st.title("Sidebar")
-        st.write("This is a sidebar.")
-        st.write("You can add widgets here")
+        # st.title("Sidebar")
+        # st.write("This is a sidebar.")
+        # st.write("You can add widgets here")
+        st.write("This functionality is not implemented yet, but it is a placeholder for future use.")
+        st.write("It can be easily implemented to select the model to use for the question answering task.")
+        _ = st.selectbox("Select the model", ["GPT-4", "Claude Opus"], disabled=True)
+
 
 def create_payload(question, documents):
+    documents = documents.split(",")
     payload = {"question": question, "documents": documents}
     return payload
 
 
 def main():
-    st.title("Hello, World!")
+    st.title("Deven's Cleric Assignment")
     # print("Hello, World!")
     make_sidebar()
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1,1])
 
     with col1:
-        st.write("This is column 1")
-        documents = st.multiselect(
-            "Select the options",
-            [
-                "https://storage.googleapis.com/cleric-assignment-call-logs/call_log_20240314_104111.txt",
-                "https://storage.googleapis.com/cleric-assignment-call-logs/call_log_20240315_104111.txt",
-                "https://storage.googleapis.com/cleric-assignment-call-logs/call_log_20240316_104111.txt",
-            ],
+        # st.write("This is column 1")
+        documents = st.text_area(
+            "Enter the URLs of the documents (separated by commas)",
+            value="https://storage.googleapis.com/cleric-assignment-call-logs/call_log_20240314_104111.txt, \
+                https://storage.googleapis.com/cleric-assignment-call-logs/call_log_20240315_104111.txt"
         )
 
     with col2:
-        st.write("This is column 2")
+        # st.write("This is column 2")
         question = st.text_input(
             "Ask the question", value="What product design decisions did the team make?"
         )
@@ -73,7 +81,22 @@ def main():
         url_local_get = f"{BASE_URL}/get_question_and_facts/"
         resp = requests.get(url_local_get)
         # st.write(resp.status_code)
-        st.write(resp.json())
+        fact_str = ""
+        if resp.status_code == 200:
+            # st.write(resp.json())
+            facts = resp.json()["facts"]
+            st.write("Facts:")
+            # st.write(len(facts), type(facts))
+            # facts = sent_tokenize(facts)
+            for i, fact in enumerate(facts):
+                if len(fact) > 0:
+                    fact = fact.replace("$", f"{chr(92)}$")
+                    sentences = sent_tokenize(fact)
+                    for sentence in sentences:
+                        fact_str += f"""1. {sentence}\n"""
+
+            st.markdown(fact_str)
+
 
 
 if __name__ == "__main__":
