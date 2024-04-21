@@ -7,7 +7,9 @@ from nltk.tokenize import sent_tokenize
 
 from responses import SubmitQuestionAndDocumentsResponse
 
-if not nltk.data.find("tokenizers/punkt"):
+try:
+    _ = nltk.data.find("tokenizers/punkt")
+except LookupError:
     nltk.download("punkt")
 
 try:
