@@ -1,5 +1,5 @@
 ---
-title: Frontend
+title: deven-cleric-frontend
 emoji: 🌍
 colorFrom: red
 colorTo: blue
@@ -9,4 +9,20 @@ app_file: app.py
 pinned: false
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+I've built the web app with Streamlit. The app is deployed on huggingface spaces. The app as expected takes comma seperated URLs and a question/questions as input and returns facts.
+
+The facts received from the API are in `list` format, however, a single element of the `list` can contain multiple sentences, so I tokenize them into multiple sentences using `nltk`.
+
+## Install
+
+Install the dependencies using,
+
+```sh
+pip install -r requirements.txt
+```
+
+Once installed, start the app using
+
+```sh
+streamlit run app.py
+```
